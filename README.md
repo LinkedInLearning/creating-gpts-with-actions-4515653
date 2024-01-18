@@ -1,5 +1,5 @@
-# Creating a ChatGPT Plugin
-This is the repository for the LinkedIn Learning course Creating a ChatGPT Plugin. The full course is available from [LinkedIn Learning][lil-course-url].
+# Creating GPTs with Actions
+This is the repository for the LinkedIn Learning course Creating GPTs with Actions. The full course is available from [LinkedIn Learning][lil-course-url].
 
 _See the readme file in the main branch for updated instructions and information._
 ## Instructions
