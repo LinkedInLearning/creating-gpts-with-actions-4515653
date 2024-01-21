@@ -1,0 +1,22 @@
+openapi: 3.0.1
+info:
+  title: Asteroid Alert
+  description: Interact with NASA to explore earth observation data that monitors near-earth objects like asteroids.
+  version: 'v1'
+servers:
+  - url: https://kwilliams.pythonanywhere.com
+paths:
+  /count:
+    get:
+      operationId: getCount
+      summary: Retrieve the count of the number of asteroids headed toward the Earth. 
+      responses:
+        "200":
+          description: OK
+  /danger:
+    get:
+      operationId: getDanger
+      summary: Determines if dangerous asteroids are headed toward the Earth.
+      responses:
+        "200":
+          description: OK
