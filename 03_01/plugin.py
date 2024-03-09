@@ -1,7 +1,7 @@
 #Import the needed libraries
 import requests
 import json
-from flask import Flask
+from flask import Flask, request, send_from_directory
 from datetime import datetime
 
 #Initialize the Flask app
@@ -11,6 +11,15 @@ app = Flask(__name__)
 # Documentation: https://api.nasa.gov/
 NASA_URL = "https://api.nasa.gov/neo/rest/v1/feed"
 NASA_API_KEY = "DEMO_KEY" #replace with your key
+
+# This key can be anything, though you will likely want a randomly generated sequence.
+SERVICE_AUTH_KEY = "3987598723758730397456"
+ERROR_STRING = "The authorization header is missing or doesn't match the required key."
+
+# Requires token be present
+def assert_auth_header():
+    assert request.headers.get(
+        "Authorization", None) == f"Bearer {SERVICE_AUTH_KEY}"
 
 # JSON helper function
 def stringToJSON(message, count):
@@ -30,7 +39,9 @@ def index():
 
 @app.route('/danger', methods=['GET'])
 def in_danger():
+
   try:
+    assert_auth_header()
     today = datetime.today().strftime('%Y-%m-%d')
     params = {"start_date": today, "end_date": today, "api_key": NASA_API_KEY}
 
@@ -47,6 +58,8 @@ def in_danger():
 
     #convert string to  object
     json_object = json.loads(stringToJSON(message, get_asteroid_count()))
+  except AssertionError:
+     return ERROR_STRING
   except:
     return "The NASA API, NeoWs (Near Earth Object Web Service), is currently down. Please try your request again later."
   return json_object
@@ -56,10 +69,15 @@ def in_danger():
 # Local test: http://127.0.0.1:5000/count
 @app.route('/count', methods=['GET'])
 def get_asteroid_count():
-  today = datetime.today().strftime('%Y-%m-%d')
-  params = {"start_date": today, "end_date": today, "api_key": NASA_API_KEY}
 
-  response = requests.get(NASA_URL, params=params)
-  api_data = response.json()
+  try:
+    assert_auth_header()
 
-  return str(len(api_data))
+    today = datetime.today().strftime('%Y-%m-%d')
+    params = {"start_date": today, "end_date": today, "api_key": NASA_API_KEY}
+
+    response = requests.get(NASA_URL, params=params)
+    api_data = response.json()
+    return str(len(api_data))
+  except AssertionError:
+    return ERROR_STRING
